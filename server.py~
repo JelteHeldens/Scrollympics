@@ -1,0 +1,55 @@
+import http.server
+import socketserver
+import json
+import pySerieel
+socketserver.TCPServer.allow_reuse_address = True
+
+COvalues = pySerieel.getValues()
+print("De CO2 waarden voor elke sensor zijn:\n" + str(COvalues))
+Slavejes = pySerieel.getSlaves()
+print("De aanwezige slaves zijn:\n" + str(Slavejes))
+pySerieel.setAlarm(800)
+class MyHttpRequestHandler(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        print(self.path)
+        if self.path == '/':
+            self.path = 'webPagina.html'
+        if self.path == '/update':
+            lijst = [800, 400, 500, 600]
+            print('lol')
+            """return self.wfile.write(lijst)"""       
+        return http.server.SimpleHTTPRequestHandler.do_GET(self)
+    
+    def do_POST(self):
+        lijst1.update(600)
+        content_length = lijst1.lengte
+        
+
+class lijst():
+    def __init__(self):
+        self.data_lijst = []
+        self.lengte = 0
+    def update(self, welke):                    #welke sensor willen we updaten (tijdelijk)
+        welke -= 1
+        #print(welke)
+        #COval = pySerieel.getValues()
+        #print("ae")
+        #self.data_lijst.append(COval[welke])
+        #self.lengte = len(self.data_lijst)
+
+
+# Create an object of the above class
+handler_object = MyHttpRequestHandler
+lijst1 = lijst()
+lijst1.update(1)
+PORT = 8080
+my_server = socketserver.TCPServer(("", PORT), handler_object)
+print("Server started http://localhost:%s" % (PORT))
+
+try:
+    my_server.serve_forever()
+except KeyboardInterrupt:
+    pass
+
+    my_server.server_close()
+    print("Server stopped.")
